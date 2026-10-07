@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -61,4 +62,69 @@ document.getElementById("clr").onclick=function(){if(confirm("Apagar todas as po
 top();start();
 </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz</title>
+<style>
+body{margin:0;background:#f6f5f1;color:#1d1d1b;font:16px/1.5 system-ui,sans-serif}
+main{max-width:480px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:24px;margin:8px 0 16px}
+.card{background:#fff;border:1px solid #ddd9cf;border-radius:14px;padding:18px;margin-bottom:16px}
+input{width:100%;box-sizing:border-box;padding:12px;font-size:16px;border:1px solid #ddd9cf;border-radius:10px;margin:10px 0}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid #ddd9cf;background:#fff;padding:12px 14px}
+button.p{background:#2a6f4f;border-color:#2a6f4f;color:#fff;width:100%;font-weight:600}
+.op{display:block;width:100%;text-align:left;margin-top:8px}
+.op.ok{border-color:#2a6f4f;color:#2a6f4f}
+.op.ko{border-color:#b3402f;color:#b3402f}
+.mu{color:#6b6a65;font-size:14px}
+.bar{height:6px;background:#ddd9cf;border-radius:3px;margin-bottom:14px}
+.bar i{display:block;height:100%;background:#2a6f4f;border-radius:3px}
+ol{padding-left:22px;margin:8px 0}
+.row{display:flex;gap:8px;margin-top:10px}.row button{flex:1}
+</style>
+</head>
+<body>
+<main>
+<h1>🧠 Quiz</h1>
+<div id="app"></div>
+<div class="card"><b>🏆 Melhores pontuações</b><ol id="top"></ol>
+<div class="row"><button id="exp">Descarregar JSON</button><button id="clr">Limpar</button></div></div>
+</main>
+<script>
+var Q=[
+{q:"Qual é a capital de Portugal?",o:["Porto","Lisboa","Coimbra","Faro"],a:1},
+{q:"Quantos continentes existem?",o:["5","6","7","8"],a:2},
+{q:"Quem escreveu 'Os Lusíadas'?",o:["Fernando Pessoa","Camões","Eça de Queirós","Saramago"],a:1},
+{q:"Qual é o maior oceano?",o:["Atlântico","Índico","Pacífico","Ártico"],a:2},
+{q:"Quanto é 12 x 12?",o:["124","144","148","164"],a:1}];
+var KEY="quiz-pontuacoes",app=document.getElementById("app"),nome="",i=0,pts=0;
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function save(r){try{localStorage.setItem(KEY,JSON.stringify(r))}catch(e){}}
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function top(){var r=load().sort(function(a,b){return b.pontos-a.pontos}).slice(0,5);
+document.getElementById("top").innerHTML=r.length?r.map(function(x){return"<li>"+esc(x.nome)+" — "+x.pontos+"/"+x.total+" <span class='mu'>("+x.data.slice(0,10)+")</span></li>"}).join(""):"<span class='mu'>Ainda sem resultados.</span>"}
+function start(){app.innerHTML="<div class='card'><label>O teu nome</label><input id='n' placeholder='Anónimo' maxlength='30'><button class='p' id='go'>Começar</button></div>";
+document.getElementById("go").onclick=function(){nome=document.getElementById("n").value.trim()||"Anónimo";i=0;pts=0;ask()}}
+function ask(){var q=Q[i];
+app.innerHTML="<div class='card'><div class='bar'><i style='width:"+(i/Q.length*100)+"%'></i></div><div class='mu'>Pergunta "+(i+1)+" de "+Q.length+"</div><h3>"+esc(q.q)+"</h3>"+q.o.map(function(o,k){return"<button class='op' data-k='"+k+"'>"+esc(o)+"</button>"}).join("")+"</div>";
+var bs=app.querySelectorAll(".op");
+bs.forEach(function(b){b.onclick=function(){var k=+b.dataset.k;if(k===q.a)pts++;
+bs.forEach(function(x){x.disabled=true;if(+x.dataset.k===q.a)x.classList.add("ok")});
+if(k!==q.a)b.classList.add("ko");
+setTimeout(function(){i++;i<Q.length?ask():end()},900)}})}
+function end(){var r=load();r.push({nome:nome,pontos:pts,total:Q.length,data:new Date().toISOString().slice(0,19)});save(r);top();
+app.innerHTML="<div class='card'><h3>"+esc(nome)+", acertaste "+pts+"/"+Q.length+"!</h3><button class='p' id='again'>Jogar outra vez</button></div>";
+document.getElementById("again").onclick=start}
+document.getElementById("exp").onclick=function(){
+var blob=new Blob([JSON.stringify(load(),null,2)],{type:"application/json"});
+var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="pontuacoes.json";a.click()};
+document.getElementById("clr").onclick=function(){if(confirm("Apagar todas as pontuações?")){save([]);top()}};
+top();start();
+</script>
+</body>
+>>>>>>> 980e94ce47968ed3b1908dcb16768460ce82af3d
 </html>
